@@ -67,6 +67,8 @@ ARGUMENTS.append(DeclareLaunchArgument('z', default_value='0.15',
 
 def launch_setup(context, *args, **kwargs):
     setup_path = LaunchConfiguration('setup_path')
+    print(str(setup_path.perform(context)))
+    
     world = LaunchConfiguration('world')
     use_sim_time = LaunchConfiguration('use_sim_time')
     x, y, z = LaunchConfiguration('x'), LaunchConfiguration('y'), LaunchConfiguration('z')
@@ -116,7 +118,7 @@ def launch_setup(context, *args, **kwargs):
 
         # Spawn robot
         Node(
-            package='ros_gz_sim',
+            package='ros_ign_gazebo',
             executable='create',
             namespace=namespace,
             arguments=['-name', robot_name,

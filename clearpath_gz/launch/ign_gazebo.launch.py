@@ -43,12 +43,12 @@ def gz_launch(context, *args, **kwargs):
     # Directories
     pkg_clearpath_gz = get_package_share_directory(
         'clearpath_gz')
-    pkg_ros_gz_sim = get_package_share_directory(
-        'ros_gz_sim')
+    pkg_ros_ign_gazebo = get_package_share_directory(
+        'ros_ign_gazebo')
 
     # Paths
-    gz_sim_launch = PathJoinSubstitution(
-        [pkg_ros_gz_sim, 'launch', 'gz_sim.launch.py'])
+    ign_gazebo_launch = PathJoinSubstitution(
+        [pkg_ros_ign_gazebo, 'launch', 'ign_gazebo.launch.py'])
 
     gui_config = PathJoinSubstitution(
         [pkg_clearpath_gz, 'config', 'gui.config'])
@@ -59,10 +59,10 @@ def gz_launch(context, *args, **kwargs):
         auto_start_option = ' -r'
 
     # Gazebo Simulator
-    gz_sim = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([gz_sim_launch]),
+    ign_gazebo = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([ign_gazebo_launch]),
         launch_arguments=[
-            ('gz_args', [LaunchConfiguration('world'),
+            ('ign_args', [LaunchConfiguration('world'),
                          '.sdf',
                          auto_start_option,
                          ' -v 4',
@@ -71,7 +71,7 @@ def gz_launch(context, *args, **kwargs):
         ]
     )
 
-    return [gz_sim]
+    return [ign_gazebo]
 
 
 def generate_launch_description():
@@ -84,14 +84,14 @@ def generate_launch_description():
     packages_paths = [os.path.join(p, 'share') for p in os.getenv('AMENT_PREFIX_PATH').split(':')]
 
     # Set ignition resource path to include all sourced ros packages
-    gz_sim_resource_path = SetEnvironmentVariable(
+    ign_gazebo_resource_path = SetEnvironmentVariable(
         name='IGN_GAZEBO_RESOURCE_PATH',
         value=[
             os.path.join(pkg_clearpath_gz, 'worlds'),
             ':' + ':'.join(packages_paths)])
 
     # Clock bridge
-    clock_bridge = Node(package='ros_gz_bridge',
+    clock_bridge = Node(package='ros_ign_bridge',
                         executable='parameter_bridge',
                         name='clock_bridge',
                         output='screen',
@@ -101,7 +101,7 @@ def generate_launch_description():
 
     # Create launch description and add actions
     ld = LaunchDescription(ARGUMENTS)
-    ld.add_action(gz_sim_resource_path)
+    ld.add_action(ign_gazebo_resource_path)
     ld.add_action(OpaqueFunction(function=gz_launch))
     ld.add_action(clock_bridge)
     return ld

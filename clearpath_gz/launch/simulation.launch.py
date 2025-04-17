@@ -50,13 +50,13 @@ def generate_launch_description():
         'clearpath_gz')
 
     # Paths
-    gz_sim_launch = PathJoinSubstitution(
-        [pkg_clearpath_gz, 'launch', 'gz_sim.launch.py'])
+    ign_gazebo_launch = PathJoinSubstitution(
+        [pkg_clearpath_gz, 'launch', 'ign_gazebo.launch.py'])
     robot_spawn_launch = PathJoinSubstitution(
         [pkg_clearpath_gz, 'launch', 'robot_spawn.launch.py'])
 
-    gz_sim = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([gz_sim_launch]),
+    ign_gazebo = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([ign_gazebo_launch]),
         launch_arguments=[
             ('world', LaunchConfiguration('world'))
         ]
@@ -77,6 +77,6 @@ def generate_launch_description():
 
     # Create launch description and add actions
     ld = LaunchDescription(ARGUMENTS)
-    ld.add_action(gz_sim)
-    ld.add_action(robot_spawn)
+    ld.add_action(ign_gazebo)
+    # ld.add_action(robot_spawn)
     return ld
